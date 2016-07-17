@@ -32,7 +32,6 @@ app.use('/login',logins);
 app.get('/sample',function (req,res) {
   res.send("Hello world!");
   console.log("get/")
-  
 });
 
 

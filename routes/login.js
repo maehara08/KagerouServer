@@ -16,8 +16,7 @@ router.get('/signup', function (req, res, next) {
 });
 
 //新規登録
-router.post(('/siginup'), function (req, res) {
-    // connection.query("insert into posts(name,post,created) values('sato "+ req.params.version + "','" + req.params.version + "',\'2016-7-12 11:00:00\')",
+router.post(('/signup'), function (req, res) {
     var requestBody = req.body;
     console.log(requestBody);
     console.log("insert into users(name,password,sex,age) values(" + requestBody.name + "," + requestBody.password + "," + requestBody.sex + "," +
@@ -36,16 +35,15 @@ router.post(('/siginup'), function (req, res) {
 
 //ログイン
 router.post('/signin', function (req, res) {
-    connection.query('select from users', function (err, result, fields) {
+    var requestBody = req.body;
+    console.log(requestBody);
+    connection.query('select * from users where name = \"'+requestBody.name +'\" and password = \"' +requestBody.password+'\"' , function (err, result, fields) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             return;
         }
-
         console.log(result);
-
     })
-
 });
 
 router.get('/signin', function (req, res, next) {
