@@ -34,3 +34,12 @@ create table circles(
 insert into circles(user_id,title,content,radius,to_move,geometry) values(
    GeomFromText('POINT(134.0011 32.989)')
 )
+
+insert into circles(user_id,title,content,radius,to_move,latlng) values(
+  1,"test","contentTest",3,200,
+   GeomFromText('POINT(134.0011 32.989)')
+);
+
+取得
+SELECT user_id, X(latlng) as log, Y(latlng) as lng FROM circles;
+geometry 型　参考http://matty-studio.jp/post-30/
