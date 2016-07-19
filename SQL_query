@@ -1,0 +1,36 @@
+grant all on kagerou.* to dbuser@localhost identified by 'csdevelopers';
+
+create table users(
+  user_id int auto_increment primary key,
+  name varchar(255) unique,
+  password varchar(255) not null,
+  sex enum('male','female') default 'male',
+  age int ,
+  created_at timestamp default current_timestamp
+);
+
+
+
+create table circles(
+    user_id int not null ,
+    circle_id int auto_increment primary key,
+    title varchar(255) not null,
+    content text not null,
+    radius int not null,
+    to_move int not null,
+    help_count int default 0,
+    view_count int default 0,
+    from_merge int ,
+    draw int ,
+    created_at timestamp default current_timestamp,
+    `latlng` geometry NOT NULL,
+    key user_id(user_id),
+    SPATIAL KEY `latlng` (`latlng`)
+)ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+
+insert into circles(user_id,title,content,radius,to_move,geometry) values(
+   GeomFromText('POINT(134.0011 32.989)')
+)
