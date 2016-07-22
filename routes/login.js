@@ -37,7 +37,7 @@ router.post(('/signup'), function (req, res) {
 router.post('/signin', function (req, res) {
     var requestBody = req.body;
     console.log(requestBody);
-    connection.query('select * from users where name = \"'+requestBody.name +'\" and password = \"' +requestBody.password+'\"' , function (err, result, fields) {
+    connection.query('select * from users where name = \"' + requestBody.name + '\" and password = \"' + requestBody.password + '\"', function (err, result, fields) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             return;

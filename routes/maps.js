@@ -26,10 +26,11 @@ router.post(('/add_circle'), function (req, res) {
 
     var query1 = `insert into circles(user_id,title,content,radius,to_move,latlng) values(${userId},\"${title}\",\"${content}\",3,200,GeomFromText(\'POINT(${lat} ${lng})\'));`;
 
-    console.log(query);
     connection.query(query1, function (err) {
         if (err) {
             console.error('error connecting: ' + err.stack);
+
+            res.send('error');
         }
     });
     console.log(req.get('content-type'));

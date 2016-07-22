@@ -43,3 +43,23 @@ insert into circles(user_id,title,content,radius,to_move,latlng) values(
 取得
 SELECT user_id, X(latlng) as log, Y(latlng) as lng FROM circles;
 geometry 型　参考http://matty-studio.jp/post-30/
+
+//近い順表示
+SELECT user_id, X(latlng) as lng, Y(latlng) as lat,
+GLength(GeomFromText(CONCAT('LineString(139 35,', X(latlng), ' ', Y(latlng),')'))) AS len
+FROM circles
+ORDER BY len
+
+//user_id置換
+SELECT users.name , X(latlng) as lng, Y(latlng) as lat,
+GLength(GeomFromText(CONCAT('LineString(139 35,', X(latlng), ' ', Y(latlng),')'))) AS len
+FROM circles inner join users on users.user_id=circles.user_id
+ORDER BY len;
+
+//10km取得
+SELECT users.name , X(latlng) as lng, Y(latlng) as lat,
+GLength(GeomFromText(CONCAT('LineString(139.001115 38.989,', X(latlng), ' ', Y(latlng),')'))) AS distance
+FROM circles
+  INNER JOIN users on users.user_id=circles.user_id
+HAVING distance <= 0.0089831601679492
+ORDER BY distance;
