@@ -18,32 +18,47 @@ router.get('/signup', function (req, res, next) {
 //新規登録
 router.post(('/signup'), function (req, res) {
     var requestBody = req.body;
+    console.log('*/-------------------------------------');
+    console.log("signup");
     console.log(requestBody);
     console.log("insert into users(name,password,sex,age) values(" + requestBody.name + "," + requestBody.password + "," + requestBody.sex + "," +
         requestBody.age + ")");
+
     connection.query("insert into users(name,password,sex,age) values(" + "\'" + requestBody.name +
         "\',\'" + requestBody.password + "\',\'" + requestBody.sex + "\',\'" + requestBody.age + "\')",
         function (err) {
             if (err) {
                 console.error('error connecting: ' + err.stack);
+                res.sendStatus(401).end();
+                return;
             }
+            res.sendStatus(200);
         });
     console.log(req.get('content-type'));
-
-    res.send("/posts!!");
+    console.log('-------------------------------------*/');
 });
 
 //ログイン
 router.post('/signin', function (req, res) {
+    console.log('*/-------------------------------------');
     var requestBody = req.body;
+    console.log("signin");
     console.log(requestBody);
     connection.query('select * from users where name = \"' + requestBody.name + '\" and password = \"' + requestBody.password + '\"', function (err, result, fields) {
+        console.log('select * from users where name = \"' + requestBody.name + '\" and password = \"' + requestBody.password + '\"');
         if (err) {
             console.error('error connecting: ' + err.stack);
+            res.sendStatus(401);
             return;
+        } else if (result.length==0) {
+            res.sendStatus(401)
         }
-        console.log(result);
-    })
+        else {
+            res.sendStatus(200);
+            console.log("result=" + result);
+        }
+    });
+    console.log('-------------------------------------*/');
 });
 
 router.get('/signin', function (req, res, next) {
