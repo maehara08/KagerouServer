@@ -18,7 +18,7 @@ router.post(('/add_circle'), function (req, res) {
     var requestBody = req.body;
     console.log(requestBody);
 
-    var userId = requestBody.user_id;
+    var name = requestBody.name;
     var title = requestBody.title;
     var content = requestBody.content;
     var lat = requestBody.latitude;
@@ -26,8 +26,8 @@ router.post(('/add_circle'), function (req, res) {
     var randLat =  oneKiroLatDegree*Math.random() * 31/10;
     var randLng =  oneKiroLngDegree*Math.random() * 31/10;
 
-    var query1 = `insert into circles(user_id,title,content,radius,move_to,latlng)
-    values(${userId},\"${title}\",\"${content}\",1,
+    var query1 = `insert into circles(name,title,content,radius,move_to,latlng)
+    values(\"${name}\",\"${title}\",\"${content}\",1,
     GeomFromText(\'POINT(${randLat} ${randLng})\'),
     GeomFromText(\'POINT(${lat} ${lng})\'));`;
     console.log(query1);
@@ -56,7 +56,7 @@ router.get('/get_near/:lat/:lng', function (req, res) {
      X(latlng) as lng, Y(latlng) as lat,
     GLength(GeomFromText(CONCAT(\'LineString(${lat} ${lng},\', X(latlng), \' \', Y(latlng),\')\'))) AS distance
     FROM circles 
-    INNER JOIN users on users.user_id=circles.user_id
+    INNER JOIN users on users.name=circles.name
     HAVING distance <= 0.0089831601679492
     ORDER BY distance;`;
 
