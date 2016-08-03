@@ -23,8 +23,14 @@ router.post(('/add_circle'), function (req, res) {
     var content = requestBody.content;
     var lat = requestBody.latitude;
     var lng = requestBody.longitude;
+    var randLat =  oneKiroLatDegree*Math.random() * 31/10;
+    var randLng =  oneKiroLngDegree*Math.random() * 31/10;
 
-    var query1 = `insert into circles(user_id,title,content,radius,to_move,latlng) values(${userId},\"${title}\",\"${content}\",3,200,GeomFromText(\'POINT(${lat} ${lng})\'));`;
+    var query1 = `insert into circles(user_id,title,content,radius,move_to,latlng)
+    values(${userId},\"${title}\",\"${content}\",1,
+    GeomFromText(\'POINT(${randLat} ${randLng})\'),
+    GeomFromText(\'POINT(${lat} ${lng})\'));`;
+    console.log(query1);
 
     connection.query(query1, function (err) {
         if (err) {
@@ -46,7 +52,7 @@ router.get('/get_near/:lat/:lng', function (req, res) {
     var lat = req.params.lat;
     var lng = req.params.lng;
 
-    var query1 = `SELECT users.name ,users.user_id,circle_id,title,content,radius,to_move,help_count,view_count,from_merge,draw,users.created_at,
+    var query1 = `SELECT users.name ,users.user_id,circle_id,title,content,radius,to_move_x,to_move_y,help_count,view_count,from_merge,draw,users.created_at,
      X(latlng) as lng, Y(latlng) as lat,
     GLength(GeomFromText(CONCAT(\'LineString(${lat} ${lng},\', X(latlng), \' \', Y(latlng),\')\'))) AS distance
     FROM circles 
@@ -64,5 +70,55 @@ router.get('/get_near/:lat/:lng', function (req, res) {
     });
 
 });
+
+/**
+ * 円移動
+ */
+var POLE_RADIUS = 6356752.314;
+var oneKiroLatDegree = ( 360 * 1000 ) / ( 2 * Math.PI * POLE_RADIUS );
+
+var JAPAN_LATITUDE = 35;
+var EQUATOR_RADIUS = 6378137;
+var oneKiroLngDegree = ( 360 * 1000 ) / ( 2 * Math.PI * ( EQUATOR_RADIUS * Math.cos(JAPAN_LATITUDE * Math.PI / 180.0) ) );
+
+function moveCircle() {
+    var randLat =  oneKiroLatDegree*Math.random() * 31/10;
+    var randLng =  oneKiroLngDegree*Math.random() * 31/10;
+
+
+}
+
+
+/**
+ * 円移動を1秒ごとに実行
+ */
+var cronJob = require('cron').CronJob;
+// 毎秒実行
+var cronTime = "* * * * * *";
+
+var job = new cronJob({
+    //実行したい日時 or crontab書式
+    cronTime: cronTime
+
+    //指定時に実行したい関数
+    , onTick: function () {
+        console.log('onTick!');
+    }
+
+    //ジョブの完了または停止時に実行する関数
+    , onComplete: function () {
+        console.log('onComplete!')
+    }
+
+    // コンストラクタを終する前にジョブを開始するかどうか
+    , start: false
+
+    //タイムゾーン
+    , timeZone: "Japan/Tokyo"
+});
+
+//ジョブ開始
+// job.start();
+
 
 module.exports = router;
