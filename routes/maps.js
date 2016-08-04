@@ -27,7 +27,7 @@ router.post(('/add_circle'), function (req, res) {
     var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
 
     var query1 = `insert into circles(name,title,content,radius,move_to,latlng)
-    values(\"${name}\",\"${title}\",\"${content}\",1,
+    values(\"${name}\",\"${title}\",\"${content}\",100,
     GeomFromText(\'POINT(${randLat} ${randLng})\'),
     GeomFromText(\'POINT(${lat} ${lng})\'));`;
     console.log(query1);
