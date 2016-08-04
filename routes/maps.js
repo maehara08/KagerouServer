@@ -55,6 +55,7 @@ router.get('/get_near/:lat/:lng', function (req, res) {
 
     var query1 = `SELECT users.name ,users.user_id,circle_id,title,content,radius,X(move_to) as move_to_x, Y(move_to) as move_to_y,help_count,view_count,from_merge,draw,users.created_at,
      X(latlng) as lng, Y(latlng) as lat,
+     users.sex,users.age,
     GLength(GeomFromText(CONCAT(\'LineString(${lat} ${lng},\', X(latlng), \' \', Y(latlng),\')\'))) AS distance
     FROM circles
     INNER JOIN users on users.name=circles.name`;
