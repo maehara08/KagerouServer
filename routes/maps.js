@@ -121,6 +121,29 @@ router.post('/add_comment', function (req, res) {
 });
 
 /**
+ * 悩み解消
+ * 悩み削除
+ */
+
+router.post('/my/circles/delete',function (req, res) {
+    var requestBody = req.body;
+    var name = requestBody.name;
+    var circleId=requestBody.circle_id;
+
+    var query = `delete from circles where circle_id=${circleId} and name="${name}";`;
+    console.log(query);
+
+    connection.query(query, function (err, result, field) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return;
+        }
+        res.sendStatus(200);
+    });
+
+});
+
+/**
  * 円移動
  */
 var POLE_RADIUS = 6356752.314;
