@@ -23,8 +23,8 @@ router.post(('/add_circle'), function (req, res) {
     var content = requestBody.content;
     var lat = requestBody.latitude;
     var lng = requestBody.longitude;
-    var randLat =  oneKiroLatDegree*Math.random() * 31/10;
-    var randLng =  oneKiroLngDegree*Math.random() * 31/10;
+    var randLat = oneKiroLatDegree * Math.random() * 31 / 10;
+    var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
 
     var query1 = `insert into circles(name,title,content,radius,move_to,latlng)
     values(\"${name}\",\"${title}\",\"${content}\",1,
@@ -48,6 +48,7 @@ router.post(('/add_circle'), function (req, res) {
 /**
  * 周囲10kmの悩み取得
  */
+
 router.get('/get_near/:lat/:lng', function (req, res) {
     var lat = req.params.lat;
     var lng = req.params.lng;
@@ -77,6 +78,48 @@ router.get('/get_near/:lat/:lng', function (req, res) {
 
 });
 
+
+/**
+ * コメント取得する
+ */
+
+router.get('/get_comments',function (req, res) {
+    var query='select * from comments;';
+    console.log(query);
+
+    connection.query(query,function (err, result, field) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            res.sendStatus(501);
+            return;
+        }
+        res.send(result);
+    })
+});
+
+/**
+ * コメント投稿
+ */
+
+router.post('/add_comment', function (req, res) {
+    var requestBody = req.body;
+    var name = requestBody.name;
+    var content = requestBody.content;
+    var circleId = requestBody.circle_id;
+
+    var query = `insert into comments(name,circle_id,content) values('${name}',${circleId},'${content}');`;
+    console.log(query);
+
+    connection.query(query, function (err, result, field) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return;
+        }
+        res.sendStatus(200);
+    });
+
+});
+
 /**
  * 円移動
  */
@@ -88,8 +131,8 @@ var EQUATOR_RADIUS = 6378137;
 var oneKiroLngDegree = ( 360 * 1000 ) / ( 2 * Math.PI * ( EQUATOR_RADIUS * Math.cos(JAPAN_LATITUDE * Math.PI / 180.0) ) );
 
 function moveCircle() {
-    var randLat =  oneKiroLatDegree*Math.random() * 31/10;
-    var randLng =  oneKiroLngDegree*Math.random() * 31/10;
+    var randLat = oneKiroLatDegree * Math.random() * 31 / 10;
+    var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
 
 
 }
