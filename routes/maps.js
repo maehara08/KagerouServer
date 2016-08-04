@@ -95,7 +95,7 @@ router.get('/get_comments',function (req, res) {
             return;
         }
         res.send(result);
-    })
+    });
 });
 
 /**
@@ -119,6 +119,26 @@ router.post('/add_comment', function (req, res) {
         res.sendStatus(200);
     });
 
+});
+
+/**
+ * Helpボタン
+ */
+
+router.post('/circle/help',function (req, res) {
+    var requestBody = req.body;
+    var circleId = requestBody.circle_id;
+
+    var query=`update circles set radius=radius+1 where circle_id=${circleId};`;
+    console.log(query);
+    connection.query(query,function (err, result, field) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            res.sendStatus(501);
+            return;
+        }
+        res.sendStatus(200);
+    });
 });
 
 /**
@@ -157,8 +177,6 @@ var oneKiroLngDegree = ( 360 * 1000 ) / ( 2 * Math.PI * ( EQUATOR_RADIUS * Math.
 function moveCircle() {
     var randLat = oneKiroLatDegree * Math.random() * 31 / 10;
     var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
-
-
 }
 
 
@@ -167,7 +185,7 @@ function moveCircle() {
  */
 var cronJob = require('cron').CronJob;
 // 毎秒実行
-var cronTime = "* * * * * *";
+var cronTime = "0-59/10 * * * * *";
 
 var job = new cronJob({
     //実行したい日時 or crontab書式
@@ -176,6 +194,15 @@ var job = new cronJob({
     //指定時に実行したい関数
     , onTick: function () {
         console.log('onTick!');
+        var query = "update circles set latlng=POINT(X(latlng)+X(move_to),Y(latlng)+Y(move_to)),radius=radius+1;";
+        console.log(query);
+
+        connection.query(query, function (err, result, field) {
+            if (err) {
+                console.error('error connecting: ' + err.stack);
+            }
+        });
+
     }
 
     //ジョブの完了または停止時に実行する関数
