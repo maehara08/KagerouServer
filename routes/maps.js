@@ -26,6 +26,13 @@ router.post(('/add_circle'), function (req, res) {
     var randLat = oneKiroLatDegree * Math.random() * 31 / 10;
     var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
 
+    if (randLat%2==0){
+        randLat=randLat*-1;
+    }
+    if (randLng%2==0){
+        randLng==randLng*-1;
+    }
+
     var query1 = `insert into circles(name,title,content,radius,move_to,latlng)
     values(\"${name}\",\"${title}\",\"${content}\",100,
     GeomFromText(\'POINT(${randLat} ${randLng})\'),
@@ -84,11 +91,11 @@ router.get('/get_near/:lat/:lng', function (req, res) {
  * コメント取得する
  */
 
-router.get('/get_comments',function (req, res) {
-    var query='select * from comments;';
+router.get('/get_comments', function (req, res) {
+    var query = 'select * from comments;';
     console.log(query);
 
-    connection.query(query,function (err, result, field) {
+    connection.query(query, function (err, result, field) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             res.sendStatus(501);
@@ -125,13 +132,13 @@ router.post('/add_comment', function (req, res) {
  * Helpボタン
  */
 
-router.post('/circle/help',function (req, res) {
+router.post('/circle/help', function (req, res) {
     var requestBody = req.body;
     var circleId = requestBody.circle_id;
 
-    var query=`update circles set radius=radius+1 where circle_id=${circleId};`;
+    var query = `update circles set radius=radius+1 where circle_id=${circleId};`;
     console.log(query);
-    connection.query(query,function (err, result, field) {
+    connection.query(query, function (err, result, field) {
         if (err) {
             console.error('error connecting: ' + err.stack);
             res.sendStatus(501);
@@ -146,10 +153,10 @@ router.post('/circle/help',function (req, res) {
  * 悩み削除
  */
 
-router.post('/my/circles/delete',function (req, res) {
+router.post('/my/circles/delete', function (req, res) {
     var requestBody = req.body;
     var name = requestBody.name;
-    var circleId=requestBody.circle_id;
+    var circleId = requestBody.circle_id;
 
     var query = `delete from circles where circle_id=${circleId} and name="${name}";`;
     console.log(query);
@@ -164,6 +171,9 @@ router.post('/my/circles/delete',function (req, res) {
 
 });
 
+
+
+
 /**
  * 円移動
  */
@@ -177,6 +187,29 @@ var oneKiroLngDegree = ( 360 * 1000 ) / ( 2 * Math.PI * ( EQUATOR_RADIUS * Math.
 function moveCircle() {
     var randLat = oneKiroLatDegree * Math.random() * 31 / 10;
     var randLng = oneKiroLngDegree * Math.random() * 31 / 10;
+}
+
+/**
+ * 当たり判定
+ */
+
+function hitCircle() {
+    var query = `select count(*) from circles;`;
+    console.log(query);
+    var countCircle;
+    connection.query(query, function (err, result, field) {
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return;
+        }
+        countCircle = result;
+        console.log(result);
+    });
+
+    for (var i = 0; countCircle > i; i++) {
+
+    }
+
 }
 
 
@@ -202,6 +235,7 @@ var job = new cronJob({
                 console.error('error connecting: ' + err.stack);
             }
         });
+        // hitCircle();
 
     }
 
@@ -218,7 +252,7 @@ var job = new cronJob({
 });
 
 //ジョブ開始
-// job.start();
+job.start();
 
 
 module.exports = router;
